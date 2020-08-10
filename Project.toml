@@ -3,11 +3,15 @@ uuid = "064fa28f-0d52-4680-88b2-3025b28a199f"
 authors = ["Scott Jordan"]
 version = "0.1.0"
 
+[deps]
+
+
 [compat]
-julia = "0.1"
+julia = "1.4"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+SafeTestsets = "1bc83da4-3b8d-516f-aca4-4fe02f6d838f"
 
 [targets]
 test = ["Test"]
