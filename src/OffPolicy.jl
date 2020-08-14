@@ -1,17 +1,26 @@
 module OffPolicy
 
-import Base:length,push!
+using Statistics, Distributions
+using Policies
+using Zygote
+import Base:length, push!
 
-# export AbstractHistory, History, BanditHistory, Trajectory
+
 export BanditExperience, Trajectory
 export length, push!
 
-export evaluate_policy
+export ope
 export estimate_returns, estimate_returns!, estimate_returns_withentropy, estimate_returns_withentropy!
 
 export AbstractImportanceSampling, UnweightedIS, WeightedIS, IS, PDIS, WIS, WPDIS
 
+export andersons_ci, tdist_ci
+
+
 include("history.jl")
-include("importancesampling.jl")
+include("importance_sampling/importancesampling.jl")
+include("confidenceintervals.jl")
+include("ope.jl")
+
 
 end

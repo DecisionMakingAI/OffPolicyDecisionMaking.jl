@@ -28,48 +28,12 @@ function estimate_return(::PDIS, logpdf_fn, τ::Trajectory{T}) where {T}
     for t in 1:N
         ρR, _, lnρ = iterativePDIS(logpdf_fn, τ, t, lnρ)
         G += ρR
+    end
     return G
 end
 
 
-function estimate_returns(ism::IS, logpdf_fn, H)
-    return @. estimate_return(ism, logpdf_fn, H)
-end
 
-function estimate_returns!(G, ism::IS, logpdf_fn, H)
-    @. G = estimate_return(ism, logpdf_fn, H)
-end
-
-function estimate_returns(ism::PDIS, logpdf_fn, H)
-    return @. estimate_return(ism, logpdf_fn, H)
-end
-
-function estimate_returns!(G, ism::PDIS, logpdf_fn, H)
-    @. G = estimate_return(ism, logpdf_fn, H)
-end
-
-function estimate_returns(ism::WIS, logpdf_fn, H)
-    N = length(H)
-    G = zeros(N)
-    ρtot = 0.0
-    for i in 1:N
-        Gi, ρi = estimate_return(ism, logpdf_fn, H[i])
-        G[i] = Gi
-        ρtot += ρi
-    end
-    G ./ ptot
-end
-
-function estimate_returns!(G, ism::WIS, logpdf_fn, H)
-    N = length(H)
-    ρtot = 0.0
-    for i in 1:N
-        Gi, ρi = estimate_return(ism, logpdf_fn, H[i])
-        G[i] = Gi
-        ρtot += ρi
-    end
-    @. G ./= ptot
-end
 
 function estimate_returns!(G, ism::WPDIS, logpdf_fn, H)
     N = length(H)
@@ -87,7 +51,8 @@ function estimate_returns!(G, ism::WPDIS, logpdf_fn, H)
             else
                 ptot += exp(lnρs[i])
             end
-        @. G /= ptot
+            @. G /= ptot
+        end
     end
 end
 
