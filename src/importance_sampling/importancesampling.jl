@@ -12,52 +12,43 @@ struct CWPDIS <: WeightedIS end
 include("bandit_is.jl")
 include("trajectory_is.jl")
 
-function estimate_returns(ism::AbstractImportanceSampling, logpdf_fn, H)
-    return @. estimate_return((ism,), (logpdf_fn,), H)
+function estimate_returns(ism::AbstractImportanceSampling, π, θ, H)
+    return @. estimate_return((ism,), (π,), (θ,), H)
 end
 
-function estimate_returns!(G, ism::AbstractImportanceSampling, logpdf_fn, H)
-    @. G = estimate_return((ism,), (logpdf_fn,), H)
+function estimate_returns!(G, ism::AbstractImportanceSampling, π, θ, H)
+    @. G = estimate_return((ism,), (π,), (θ,), H)
 end
 
-function estimate_returns_withentropy(ism::AbstractImportanceSampling, logpdf_fn, H, α)
-    return @. estimate_return_withentropy((ism,), (logpdf_fn,), H, α)
+function estimate_returns_withentropy(ism::AbstractImportanceSampling, π, θ, H, α)
+    return @. estimate_return_withentropy((ism,), (π,), (θ,), H, α)
 end
 
-function estimate_returns_withentropy!(G, ism::AbstractImportanceSampling, logpdf_fn, H, α)
-    @. G = estimate_return_withentropy((ism,), (logpdf_fn,), H, α)
+function estimate_returns_withentropy!(G, ism::AbstractImportanceSampling, π, θ, H, α)
+    @. G = estimate_return_withentropy((ism,), (π,), (θ,), H, α)
 end
 
-function estimate_returns(ism::WIS, logpdf_fn, H)
+function estimate_returns(ism::WIS, π, θ, H)
     N = length(H)
-    # G = zeros(N)
     ρtot = 0.0
-    rets = estimate_return.((ism,), (logpdf_fn,), H)
+    rets = estimate_return.((ism,), (π,), (θ,), H)
     G = [r[1] for r in rets]
 
     for i in 1:N
         ρi = rets[i][2]
-        # Gi, ρi = estimate_return_withentropy(ism, logpdf_fn, H[i], α)
-        # G[i] = Gi
-        # push!(G, Gi)
         ρtot += ρi
     end
     G ./ ρtot
 end
 
-function estimate_returns_withentropy(ism::WIS, logpdf_fn, H, α)
+function estimate_returns_withentropy(ism::WIS, π, θ, H, α)
     N = length(H)
-    # G = zeros(N)
     ρtot = 0.0
-    # G = Vector{Float64}()
-    rets = estimate_return_withentropy.((ism,), (logpdf_fn,), H, (α,))
+    rets = estimate_return_withentropy.((ism,), (π,), (θ,), H, (α,))
     G = [r[1] for r in rets]
 
     for i in 1:N
         ρi = rets[i][2]
-        # Gi, ρi = estimate_return_withentropy(ism, logpdf_fn, H[i], α)
-        # G[i] = Gi
-        # push!(G, Gi)
         ρtot += ρi
     end
     G / ρtot
@@ -74,11 +65,11 @@ function estimate_returns!(G, ism::WIS, logpdf_fn, H)
     @. G ./= ρtot
 end
 
-function estimate_returns_withentropy!(G, ism::WIS, logpdf_fn, H, α)
+function estimate_returns_withentropy!(G, ism::WIS, π, θ, H, α)
     N = length(H)
     ρtot = 0.0
     for i in 1:N
-        Gi, ρi = estimate_return_withentropy(ism, logpdf_fn, H[i], α)
+        Gi, ρi = estimate_return_withentropy(ism, π, θ, H[i], α)
         G[i] = Gi
         ρtot += ρi
     end
