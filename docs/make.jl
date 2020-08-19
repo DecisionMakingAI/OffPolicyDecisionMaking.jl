@@ -1,14 +1,14 @@
-using OffPolicy
+using OffPolicyDecisionMaking
 using Documenter
 
 makedocs(;
-    modules=[OffPolicy],
+    modules=[OffPolicyDecisionMaking],
     authors="Scott Jordan",
-    repo="https://github.com/DecisionMakingAI/OffPolicy.jl/blob/{commit}{path}#L{line}",
-    sitename="OffPolicy.jl",
+    repo="https://github.com/DecisionMakingAI/OffPolicyDecisionMaking.jl/blob/{commit}{path}#L{line}",
+    sitename="OffPolicyDecisionMaking.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://DecisionMakingAI.github.io/OffPolicy.jl",
+        canonical="https://DecisionMakingAI.github.io/OffPolicyDecisionMaking.jl",
         assets=String[],
     ),
     pages=[
@@ -17,5 +17,5 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/DecisionMakingAI/OffPolicy.jl",
+    repo="github.com/DecisionMakingAI/OffPolicyDecisionMaking.jl",
 )

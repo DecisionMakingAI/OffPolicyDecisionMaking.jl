@@ -1,12 +1,12 @@
 ```@meta
-CurrentModule = OffPolicy
+CurrentModule = OffPolicyDecisionMaking
 ```
 
-# OffPolicy
+# OffPolicyDecisionMaking
 
 ```@index
 ```
 
 ```@autodocs
-Modules = [OffPolicy]
+Modules = [OffPolicyDecisionMaking]
 ```
