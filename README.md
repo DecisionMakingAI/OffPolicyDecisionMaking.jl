@@ -1,4 +1,4 @@
-# OffPolicy
+# OffPolicyDecisionMaking
 
 [![Stable](https://img.shields.io/badge/docs-stable-blue.svg)](https://DecisionMakingAI.github.io/OffPolicy.jl/stable)
 [![Dev](https://img.shields.io/badge/docs-dev-blue.svg)](https://DecisionMakingAI.github.io/OffPolicy.jl/dev)
@@ -11,8 +11,8 @@ First we create a bandit environment and functions to sample from that environme
 
 ```julia
 using DecisionMakingEnvironments
-using Policies
-using OffPolicy
+using DecisionMakingPolicies
+using OffPolicyDecisionMaking
 
 using Optim
 using Zygote
