@@ -1,4 +1,4 @@
-module OffPolicy
+module OffPolicyDecisionMaking
 
 using Random, Statistics, Distributions
 using Policies
