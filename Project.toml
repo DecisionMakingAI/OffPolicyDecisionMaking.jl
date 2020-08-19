@@ -1,4 +1,4 @@
-name = "OffPolicy"
+name = "OffPolicyDecisionMaking"
 uuid = "064fa28f-0d52-4680-88b2-3025b28a199f"
 authors = ["Scott Jordan"]
 version = "0.1.0"

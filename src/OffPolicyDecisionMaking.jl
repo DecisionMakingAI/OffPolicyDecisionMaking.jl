@@ -1,9 +1,12 @@
 module OffPolicyDecisionMaking
 
+using DecisionMakingPolicies
+
 using Random, Statistics, Distributions
-using Policies
 using Zygote
+
 import Base:length, push!
+
 
 
 export BanditExperience, Trajectory
