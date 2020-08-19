@@ -1,32 +1,32 @@
 
-function estimate_return(::IS, logpdf_fn, τ::Trajectory)
+function estimate_return(::IS, π, θ, τ::Trajectory)
     G = sum(τ.rewards)
     blogp = sum(τ.blogps)
-    logp = sum(@. logpdf_fn(τ.states, τ.actions))
+    logp = sum(@. logpdf((π,), (θ,), τ.states, τ.actions))
     ρ = exp(logp - blogp)
     return exp(logp - blogp) * G
 end
 
-function estimate_return(::WIS, logpdf_fn, τ::Trajectory)
+function estimate_return(::WIS, (π,), (θ,), τ::Trajectory)
     G = sum(τ.rewards)
     blogp = sum(τ.blogps)
-    logp = sum(@. logpdf_fn(τ.states, τ.actions))
+    logp = sum(@. logpdf((π,), (θ,), τ.states, τ.actions))
     ρ = exp(logp - blogp)
     return ρ * G, ρ
 end
 
-function iterativePDIS(logpdf_fn, τ::Trajectory{T}, t, lnρ) where {T}
-    lnρ += logpdf_fn(τ.states, τ.actions) - τ[t].blogps
+function iterativePDIS(π, θ, τ::Trajectory{T}, t, lnρ) where {T}
+    lnρ += logpdf(π, θ, τ.states, τ.actions) - τ[t].blogps
     ρ = exp(lnρ)
     return ρ * τ.rewards[t], ρ, lnρ
 end
 
-function estimate_return(::PDIS, logpdf_fn, τ::Trajectory{T}) where {T}
+function estimate_return(::PDIS, π, θ, τ::Trajectory{T}) where {T}
     N = length(τ)
     lnρ = T(0.0)
     G = T(0.0)
     for t in 1:N
-        ρR, _, lnρ = iterativePDIS(logpdf_fn, τ, t, lnρ)
+        ρR, _, lnρ = iterativePDIS(π, θ, τ, t, lnρ)
         G += ρR
     end
     return G
@@ -35,7 +35,7 @@ end
 
 
 
-function estimate_returns!(G, ism::WPDIS, logpdf_fn, H)
+function estimate_returns!(G, ism::CWPDIS, π, θ, H)
     N = length(H)
     lnρs = zeros(N)
     ρtot = 0.0
@@ -44,7 +44,7 @@ function estimate_returns!(G, ism::WPDIS, logpdf_fn, H)
         for t in 1:L
             ptot = 0.0
             if length(H[i]) ≤ t
-                ρR, ρ, lnρ = iterativePDIS(logpdf_fn, H[i], t, lnρs[i])
+                ρR, ρ, lnρ = iterativePDIS(π, θ, H[i], t, lnρs[i])
                 G[i] += ρR
                 lnρs[i] += lnρ
                 ptot += ρ
@@ -56,8 +56,9 @@ function estimate_returns!(G, ism::WPDIS, logpdf_fn, H)
     end
 end
 
-function estimate_returns(ism::WPDIS, logpdf_fn, H)
+function estimate_returns(ism::CWPDIS, π, θ, H)
     N = length(H)
     G = zeros(N)
-    estimate_returns!(G, ism, logpdf_fn, H)
+    estimate_returns!(G, ism, π, θ, H)
+    return G
 end
