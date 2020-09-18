@@ -12,11 +12,11 @@ end
 
 function tdist_ci(;δ=0.05, tail=:both)
     if tail == :right
-        return x->tinterval(x,δ,+)
+        return x->tinterval(x,δ,(μ,s)->μ-s) # quantile of 0.05 is negative so need to subtract to get upper
     elseif tail == :left
-        return x->tinterval(x,δ,-)
+        return x->tinterval(x,δ,(μ,s)->μ+s) # need to add to get lower bound
     else
-        return x->tinterval(x,δ/2,(μ,s)->(μ-s,μ+s))
+        return x->tinterval(x,δ/2,(μ,s)->(μ+s,μ-s))
     end
 end
 
