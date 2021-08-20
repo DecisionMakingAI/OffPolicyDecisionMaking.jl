@@ -11,9 +11,9 @@ struct SplitLastKKeepTest{T} <: AbstractSplitMethod where {T}
 end
 
 
-function collect_and_split!(D, train_idxs, test_idxs, π, θ, n, sample_fn!, split_method::SplitLastK)
+function collect_and_split!(D, train_idxs, test_idxs, π, n, sample_fn!, split_method::SplitLastK)
     L = length(D)
-    sample_fn!(D, π, θ, n)
+    sample_fn!(D, π, n)
     idxs = randperm(n)
     k = floor(Int, split_method.p*n)
     empty!(train_idxs)
@@ -23,9 +23,9 @@ function collect_and_split!(D, train_idxs, test_idxs, π, θ, n, sample_fn!, spl
     append!(test_idxs, L .+ idxs[k+1:end])
 end
 
-function collect_and_split!(D, train_idxs, test_idxs, π, θ, n, sample_fn!, split_method::SplitLastKKeepTest)
+function collect_and_split!(D, train_idxs, test_idxs, π, n, sample_fn!, split_method::SplitLastKKeepTest)
     L = length(D)
-    sample_fn!(D, π, θ, n)
+    sample_fn!(D, π, n)
     idxs = randperm(n)
     k = floor(Int, split_method.p*n)
     append!(train_idxs, L .+ idxs[1:k])
@@ -43,17 +43,17 @@ struct HICOPI{TC,TJ,TO,TG}
 end
 
 
-function (a::HICOPI)(D, train_idxs, safety_idxs, θ, θsafe; behavior=:safe)
+function (a::HICOPI)(D, train_idxs, safety_idxs, π, πsafe; behavior=:safe)
     if behavior == :safe
-        a.collect_fn!(D, train_idxs, safety_idxs, θsafe)
+        a.collect_fn!(D, train_idxs, safety_idxs, πsafe)
     else
-        a.collect_fn!(D, train_idxs, safety_idxs, θ)
+        a.collect_fn!(D, train_idxs, safety_idxs, π)
     end
     Dtrain = @view D[train_idxs]
     Dsafety = @view D[safety_idxs]
     # f = (D,θ)->a.J(D, θ)
-    g = (Dsafety, θ)->a.g(Dsafety, θ, θsafe)
+    g = (Dsafety, θ)->a.g(Dsafety, π, πsafe)
     p = SeldonianProblem(a.J, g)
-    result = solve(p, a.optimizer, θ, Dtrain, Dsafety)
+    result = solve(p, a.optimizer, π, Dtrain, Dsafety)
     return result
 end

@@ -4,8 +4,8 @@ using DecisionMakingPolicies
 
 using Random, Statistics, Distributions
 using Zygote
+using DecisionMakingEnvironments
 
-import Base:length, push!
 
 
 
@@ -27,7 +27,6 @@ export collect_and_split!
 export HICOPI
 
 
-include("history.jl")
 include("importance_sampling/importancesampling.jl")
 include("confidenceintervals.jl")
 include("ope.jl")
